@@ -1,0 +1,274 @@
+/***********************************************************************************************
+ *FILE NAME: DIO interface source File
+ *AUTHOR:yasmen gamal
+ *DESCRIPTION:DIO functions impelmenations
+ ***********************************************************************************************/
+
+//#include<avr/io.h>
+#include "../lib/common_macros.h"
+#include "../lib/std_types.h"
+#include "DIO_interface.h"
+#include "DIO_REG.h"
+
+#define SET_BIT(REG,BIT) (REG|=(1<<BIT))
+void DIO_vSetPinDirection(uint8 Copy_u8PORT, uint8 Copy_u8PinNumber,uint8 copy_u8state) {
+
+	if ((Copy_u8PinNumber >= NUM_OF_PINS_PER_PORT)
+			|| (Copy_u8PORT >= NUM_OF_PORTS)) {
+	} else {
+
+		switch (Copy_u8PORT) {
+		case PORTA_ID:
+			if (copy_u8state == PIN_OUTPUT) {
+				SET_BIT(PORTA_BASE.DDR, Copy_u8PinNumber);
+
+			} else {
+				CLEAR_BIT(PORTA_BASE.DDR, Copy_u8PinNumber);
+			}
+			break;
+		case PORTB_ID:
+
+			if (copy_u8state == PIN_OUTPUT) {
+				SET_BIT(PORTB_BASE.DDR, Copy_u8PinNumber);
+			} else {
+				CLEAR_BIT(PORTB_BASE.DDR, Copy_u8PinNumber);
+			}
+			break;
+		case PORTC_ID:
+			if (copy_u8state == PIN_OUTPUT) {
+				SET_BIT(PORTC_BASE.DDR, Copy_u8PinNumber);
+			} else {
+				CLEAR_BIT(PORTC_BASE.DDR, Copy_u8PinNumber);
+			}
+			break;
+		case PORTD_ID:
+			if (copy_u8state == PIN_OUTPUT) {
+				SET_BIT(PORTD_BASE.DDR, Copy_u8PinNumber);
+			} else {
+				CLEAR_BIT(PORTD_BASE.DDR, Copy_u8PinNumber);
+			}
+			break;
+		}
+	}
+}
+
+void DIO_vWritePin(uint8 Copy_u8PORT, uint8 Copy_u8PinNumber,
+		uint8 Copy_u8value) {
+
+	/*
+	 * Check if the input port number is greater than NUM_OF_PINS_PER_PORT value.
+	 * Or if the input pin number is greater than NUM_OF_PINS_PER_PORT value.
+	 * In this case the input is not valid port/pin number
+	 */
+	if ((Copy_u8PinNumber >= NUM_OF_PINS_PER_PORT)
+			|| (Copy_u8PORT >= NUM_OF_PORTS)) {
+		/* Do Nothing */
+	} else {
+		/* Write the pin value as required */
+		switch (Copy_u8PORT) {
+		case PORTA_ID:
+			if (Copy_u8value == LOGIC_HIGH) {
+				SET_BIT(PORTA_BASE.Port, Copy_u8PinNumber);
+			} else {
+				CLEAR_BIT(PORTA_BASE.Port, Copy_u8PinNumber);
+			}
+			break;
+		case PORTB_ID:
+			if (Copy_u8value == LOGIC_HIGH) {
+				SET_BIT(PORTB_BASE.Port, Copy_u8PinNumber);
+			} else {
+				CLEAR_BIT(PORTB_BASE.Port, Copy_u8PinNumber);
+			}
+			break;
+		case PORTC_ID:
+			if (Copy_u8value == LOGIC_HIGH) {
+				SET_BIT(PORTC_BASE.Port, Copy_u8PinNumber);
+			} else {
+				CLEAR_BIT(PORTC_BASE.Port, Copy_u8PinNumber);
+			}
+			break;
+		case PORTD_ID:
+			if (Copy_u8value == LOGIC_HIGH) {
+				SET_BIT(PORTD_BASE.Port, Copy_u8PinNumber);
+			} else {
+				CLEAR_BIT(PORTD_BASE.Port, Copy_u8PinNumber);
+			}
+			break;
+		}
+	}
+}
+
+void DIO_vTogglePin(uint8 Copy_u8PORT, uint8 Copy_u8PinNumber) {
+
+	if (Copy_u8PORT >= NUM_OF_PORTS) {
+		/* Do Nothing */
+	} else {
+		/* Write the port value as required */
+		switch (Copy_u8PORT) {
+		case PORTA_ID:
+
+			TOGGLE_BIT(PORTA_BASE.Pin, Copy_u8PinNumber);
+			break;
+		case PORTB_ID:
+			TOGGLE_BIT(PORTB_BASE.Pin, Copy_u8PinNumber);
+			break;
+		case PORTC_ID:
+			TOGGLE_BIT(PORTC_BASE.Pin, Copy_u8PinNumber);
+			break;
+		case PORTD_ID:
+			TOGGLE_BIT(PORTD_BASE.Pin, Copy_u8PinNumber);
+			break;
+		}
+	}
+
+}
+void DIO_vSetPortDirection(uint8 Copy_u8PORT, uint8 copy_u8state) {
+
+	/*
+	 * Check if the input number is greater than NUM_OF_PORTS value.
+	 * In this case the input is not valid port number
+	 */
+	if (Copy_u8PORT >= NUM_OF_PORTS) {
+		/* Do Nothing */
+	} else {
+		/* Setup the port direction as required */
+		switch (Copy_u8PORT) {
+		case PORTA_ID:
+			PORTA_BASE.DDR = copy_u8state;
+			break;
+		case PORTB_ID:
+			PORTB_BASE.DDR = copy_u8state;
+			break;
+		case PORTC_ID:
+			PORTC_BASE.DDR = copy_u8state;
+			break;
+		case PORTD_ID:
+			PORTD_BASE.DDR = copy_u8state;
+			break;
+		}
+	}
+}
+void DIO_vWritePort(uint8 Copy_u8PORT, uint8 Copy_u8value) {
+
+	/* Check if the input number is greater than NUM_OF_PORTS value.
+	 * In this case the input is not valid port number
+	 */
+	if (Copy_u8PORT >= NUM_OF_PORTS) {
+		/* Do Nothing */
+	} else {
+		/* Write the port value as required */
+		switch (Copy_u8PORT) {
+		case PORTA_ID:
+			PORTA_BASE.Port = Copy_u8value;
+			break;
+		case PORTB_ID:
+			PORTB_BASE.Port = Copy_u8value;
+			break;
+		case PORTC_ID:
+			PORTC_BASE.Port = Copy_u8value;
+			break;
+		case PORTD_ID:
+			PORTD_BASE.Port = Copy_u8value;
+			break;
+		}
+	}
+}
+uint8 DIO_u8GetPinValue(uint8 Copy_u8PORT, uint8 Copy_u8PinNumber) {
+	uint8 pin_value = LOGIC_LOW;
+
+	/*
+	 * Check if the input port number is greater than NUM_OF_PINS_PER_PORT value.
+	 * Or if the input pin number is greater than NUM_OF_PINS_PER_PORT value.
+	 * In this case the input is not valid port/pin number
+	 */
+	if ((Copy_u8PinNumber >= NUM_OF_PINS_PER_PORT)
+			|| (Copy_u8PORT >= NUM_OF_PORTS)) {
+		/* Do Nothing */
+	} else {
+		/* Read the pin value as required */
+		switch (Copy_u8PORT) {
+		case PORTA_ID:
+			if (BIT_IS_SET(PORTA_BASE.Pin, Copy_u8PinNumber)) {
+				pin_value = LOGIC_HIGH;
+			} else {
+				pin_value = LOGIC_LOW;
+			}
+			break;
+		case PORTB_ID:
+			if (BIT_IS_SET(PORTB_BASE.Pin, Copy_u8PinNumber)) {
+				pin_value = LOGIC_HIGH;
+			} else {
+				pin_value = LOGIC_LOW;
+			}
+			break;
+		case PORTC_ID:
+			if (BIT_IS_SET(PORTC_BASE.Pin, Copy_u8PinNumber)) {
+				pin_value = LOGIC_HIGH;
+			} else {
+				pin_value = LOGIC_LOW;
+			}
+			break;
+		case PORTD_ID:
+			if (BIT_IS_SET(PORTD_BASE.Pin, Copy_u8PinNumber)) {
+				pin_value = LOGIC_HIGH;
+			} else {
+				pin_value = LOGIC_LOW;
+			}
+			break;
+		}
+	}
+
+	return pin_value;
+
+}
+void DIO_vTogglrPort(uint8 Copy_u8PORT) {
+
+	if (Copy_u8PORT >= NUM_OF_PORTS) {
+		/* Do Nothing */
+	} else {
+		/* Write the port value as required */
+		switch (Copy_u8PORT) {
+		case PORTA_ID:
+			PORTA_BASE.Port ^= PORTA_BASE.Port;
+			break;
+		case PORTB_ID:
+			PORTB_BASE.Port ^= PORTA_BASE.Port;
+			break;
+		case PORTC_ID:
+			PORTC_BASE.Port ^= PORTA_BASE.Port;
+			break;
+		case PORTD_ID:
+			PORTD_BASE.Port ^= PORTA_BASE.Port;
+			break;
+		}
+	}
+}
+uint8 DIO_GETPortValue(uint8 Copy_u8PORT) {
+	uint8 value = LOGIC_LOW;
+
+	/*
+	 * Check if the input number is greater than NUM_OF_PORTS value.
+	 * In this case the input is not valid port number
+	 */
+	if (Copy_u8PORT >= NUM_OF_PORTS) {
+		/* Do Nothing */
+	} else {
+		/* Read the port value as required */
+		switch (Copy_u8PORT) {
+		case PORTA_ID:
+			value = PORTA_BASE.Pin;
+			break;
+		case PORTB_ID:
+			value = PORTB_BASE.Pin;
+			break;
+		case PORTC_ID:
+			value = PORTC_BASE.Pin;
+			break;
+		case PORTD_ID:
+			value = PORTD_BASE.Pin;
+			break;
+		}
+	}
+
+	return value;
+}
